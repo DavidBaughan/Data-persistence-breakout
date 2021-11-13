@@ -61,6 +61,7 @@
     <Compile Include="Assets\Scripts\Ball.cs" />
     <Compile Include="Assets\Scripts\DeathZone.cs" />
     <Compile Include="Assets\Scripts\Brick.cs" />
+    <Compile Include="Assets\Scripts\TitleScreenManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

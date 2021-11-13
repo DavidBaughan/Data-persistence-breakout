@@ -11,22 +11,35 @@ public class MainManager : MonoBehaviour
     public int LineCount = 6;
     public Rigidbody Ball;
 
-    public Text ScoreText;
-    public GameObject GameOverText, EnterNameText, EnterNameBox, UserEnteredName;
+    public Text ScoreText, HighScoreText;
+    public GameObject GameOverText, EnterNameText;
     
     private bool m_Started = false;
     private int m_Points, highScore;
     
     private bool m_GameOver = false;
-
+    private string playerName;
+    private GameObject inputStore;
 
 
     private void Awake()
     {
-        
+        string path = Application.persistentDataPath + "/savefile.Json";
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            SaveData data = JsonUtility.FromJson<SaveData>(json);
+            HighScoreText.text = "Best Score: " + data.playerName + " :" + data.highScore;
+            highScore = data.highScore;
+
+        }
+
+       
+        inputStore = GameObject.Find("InputStore");
+       playerName = inputStore.GetComponent<TitleScreenManager>().currentPlayername;
 
 
-    }
+        }
 
 
 
@@ -88,19 +101,17 @@ public class MainManager : MonoBehaviour
         {
             if ( m_Points > highScore)
             {
-                EnterNameBox.SetActive(true);
-                EnterNameText.SetActive(true);
-
+               EnterNameText.SetActive(true);
+                UpdateHighScore();
             }
 
-            else
-            {
                 GameOverText.SetActive(true);
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
-                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                Destroy(inputStore);
+                    SceneManager.LoadScene(0);
                 }
-            }
+            
         }
     }
 
@@ -120,7 +131,15 @@ public class MainManager : MonoBehaviour
     {
         SaveData data = new SaveData();
 
+        data.highScore = m_Points;
+        data.playerName = playerName;
 
+        string json = JsonUtility.ToJson(data);
+
+        File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
+
+
+      
 
     }
 
